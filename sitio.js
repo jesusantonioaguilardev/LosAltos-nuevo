@@ -5,17 +5,23 @@
   var menu = document.getElementById('menu');
   var encabezado = document.querySelector('.encabezado');
 
+  var ETIQUETAS = { es: ['Abrir menú', 'Cerrar menú'], en: ['Open menu', 'Close menu'] };
+  function etiquetaMenu() {
+    var lang = window.LA_idioma ? window.LA_idioma() : 'es';
+    boton.setAttribute('aria-label', ETIQUETAS[lang][menu.classList.contains('abierto') ? 1 : 0]);
+  }
   function cerrarMenu() {
     menu.classList.remove('abierto');
     boton.setAttribute('aria-expanded', 'false');
-    boton.setAttribute('aria-label', 'Abrir menú');
+    etiquetaMenu();
   }
   boton.addEventListener('click', function () {
     var abierto = menu.classList.toggle('abierto');
     boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-    boton.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+    etiquetaMenu();
   });
-  menu.addEventListener('click', function (e) { if (e.target.closest('a')) cerrarMenu(); });
+  document.addEventListener('la:idioma', etiquetaMenu);
+  menu.addEventListener('click', function (e) { if (e.target.closest('a, .idioma button')) cerrarMenu(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
 
   function sombra() { encabezado.classList.toggle('con-sombra', window.scrollY > 10); }
